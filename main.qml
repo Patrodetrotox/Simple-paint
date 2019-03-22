@@ -145,8 +145,8 @@ ApplicationWindow {
                     }
                 },
                 State {
+                    when: canvas.lineColor !== "red"
                     PropertyChanges {
-                        when: canvas.lineColor !== "red"
                         target: red
                         checked: false
                     }
@@ -198,8 +198,8 @@ ApplicationWindow {
                     }
                 },
                 State {
+                    when: canvas.lineColor !== "blue"
                     PropertyChanges {
-                        when: canvas.lineColor !== "blue"
                         target: blue
                         checked: false
                     }
