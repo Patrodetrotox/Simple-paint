@@ -31,6 +31,9 @@ ApplicationWindow {
             lines = lines.filter(function (line) {
                 return line.color !== color
             })
+
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, width, height)
             canvas.requestPaint();
         }
 
@@ -61,7 +64,6 @@ ApplicationWindow {
 
         onPaint: {
             var ctx = canvas.getContext("2d");
-            ctx.clearRect(0, 0, width, height);
             canvas.lines.forEach(function(line) {
                 ctx.strokeStyle = line.color;
                 ctx.lineWidth = line.width;
