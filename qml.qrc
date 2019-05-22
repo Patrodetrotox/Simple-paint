@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>Button.qml</file>
         <file>Switch.qml</file>
+        <file>LineCanvas.qml</file>
     </qresource>
 </RCC>

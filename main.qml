@@ -8,35 +8,15 @@ ApplicationWindow {
     height: 900
     width: 450
 
-
-    Canvas {
-
-        id: canvas
-        property string lineColor: "black"
-        property var lines: []
-        property real lWidth: 5
+    LineCanvas {
+        id: drawedCanvas
         anchors.fill: parent
+    }
 
-        function addLine(color, width, points) {
-            var line = {
-                "points": points,
-                "color": color,
-                "width": width
-            };
-            lines.push(line);
-            canvas.requestPaint();
-        }
+    LineCanvas {
 
-        function removeColor(color) {
-            lines = lines.filter(function (line) {
-                return line.color !== color
-            })
-
-            var ctx = canvas.getContext("2d");
-            ctx.clearRect(0, 0, width, height)
-            canvas.requestPaint();
-        }
-
+        id: usedCanvas
+        anchors.fill: parent
 
         MouseArea {
             anchors.fill: parent
@@ -48,7 +28,7 @@ ApplicationWindow {
                     "y": mouseY
                 };
                 points.push(point);
-                canvas.addLine(canvas.lineColor, canvas.lWidth, points);
+                usedCanvas.addLine(usedCanvas.lineColor, usedCanvas.lWidth, points);
             }
 
             onPositionChanged: {
@@ -56,67 +36,57 @@ ApplicationWindow {
                     "x": mouseX,
                     "y": mouseY
                 };
-                canvas.lines[canvas.lines.length - 1].points.push(point);
-                canvas.requestPaint();
+                usedCanvas.lines[0].points.push(point);
+                usedCanvas.requestPaint();
             }
-        }
 
-
-        onPaint: {
-            var ctx = canvas.getContext("2d");
-            canvas.lines.forEach(function(line) {
-                ctx.strokeStyle = line.color;
-                ctx.lineWidth = line.width;
-                ctx.beginPath();
-                line.points.forEach(function(point, iPoint) {
-                    if(iPoint === 0) {
-                        ctx.moveTo(point.x, point.y);
-                    } else {
-                        ctx.lineTo(point.x, point.y);
-                    }
-                })
-                ctx.stroke();
-            })
+            onReleased: {
+                drawedCanvas.lines.push(usedCanvas.lines.pop());
+                var ctx = usedCanvas.getContext("2d");
+                ctx.clearRect(0, 0, width, height)
+                usedCanvas.requestPaint();
+                drawedCanvas.requestPaint();
+            }
         }
 
         Connections {
             target: plus
-            onClicked: canvas.lWidth++
+            onClicked: usedCanvas.lWidth++
         }
 
         Connections {
             target: minus
-            onClicked: canvas.lWidth--
+            onClicked: usedCanvas.lWidth--
         }
 
         Connections {
             target: x
-            onClicked: canvas.removeColor(canvas.lineColor)
+            onClicked: drawedCanvas.removeColor(usedCanvas.lineColor)
         }
 
         Connections {
             target: blue
-            onTriggered: canvas.lineColor = "blue"
+            onTriggered: usedCanvas.lineColor = "blue"
         }
 
         Connections {
             target: black
-            onTriggered: canvas.lineColor = "black"
+            onTriggered: usedCanvas.lineColor = "black"
         }
 
         Connections {
             target: red
-            onTriggered: canvas.lineColor = "red"
+            onTriggered: usedCanvas.lineColor = "red"
         }
 
         Connections {
             target: green
-            onTriggered: canvas.lineColor = "green"
+            onTriggered: usedCanvas.lineColor = "green"
         }
 
         Connections {
             target: yellow
-            onTriggered: canvas.lineColor = "yellow"
+            onTriggered: usedCanvas.lineColor = "yellow"
         }
     }
 
@@ -138,14 +108,14 @@ ApplicationWindow {
             height: width / 2
             states: [
                 State {
-                    when: canvas.lineColor === "red"
+                    when: usedCanvas.lineColor === "red"
                     PropertyChanges {
                         target: red
                         checked: true
                     }
                 },
                 State {
-                    when: canvas.lineColor !== "red"
+                    when: usedCanvas.lineColor !== "red"
                     PropertyChanges {
                         target: red
                         checked: false
@@ -164,14 +134,14 @@ ApplicationWindow {
             height: width / 2
             states: [
                 State {
-                    when: canvas.lineColor === "green"
+                    when: usedCanvas.lineColor === "green"
                     PropertyChanges {
                         target: green
                         checked: true
                     }
                 },
                 State {
-                    when: canvas.lineColor !== "green"
+                    when: usedCanvas.lineColor !== "green"
                     PropertyChanges {
                         target: green
                         checked: false
@@ -191,14 +161,14 @@ ApplicationWindow {
             height: width / 2
             states: [
                 State {
-                    when: canvas.lineColor === "blue"
+                    when: usedCanvas.lineColor === "blue"
                     PropertyChanges {
                         target: blue
                         checked: true
                     }
                 },
                 State {
-                    when: canvas.lineColor !== "blue"
+                    when: usedCanvas.lineColor !== "blue"
                     PropertyChanges {
                         target: blue
                         checked: false
@@ -217,14 +187,14 @@ ApplicationWindow {
             height: width / 2
             states: [
                 State {
-                    when: canvas.lineColor === "yellow"
+                    when: usedCanvas.lineColor === "yellow"
                     PropertyChanges {
                         target: yellow
                         checked: true
                     }
                 },
                 State {
-                    when: canvas.lineColor !== "yellow"
+                    when: usedCanvas.lineColor !== "yellow"
                     PropertyChanges {
                         target: yellow
                         checked: false
@@ -243,14 +213,14 @@ ApplicationWindow {
             height: width / 2
             states: [
                 State {
-                    when: canvas.lineColor === "black"
+                    when: usedCanvas.lineColor === "black"
                     PropertyChanges {
                         target: black
                         checked: true
                     }
                 },
                 State {
-                    when: canvas.lineColor !== "black"
+                    when: usedCanvas.lineColor !== "black"
                     PropertyChanges {
                         target: black
                         checked: false
